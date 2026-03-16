@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cab Routing Result</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family:Arial, sans-serif;
+margin:0;
+background: linear-gradient(135deg,#4c4d4e,#00f2fe);
+min-height:100vh;
+}
+
+header{
+background:#1f2d3d;
+color:white;
+text-align:center;
+padding:20px;
+font-size:28px;
+}
+
+.container{
+width:70%;
+margin:auto;
+margin-top:40px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 8px 25px rgba(0,0,0,0.2);
+}
+
+h2{
+text-align:center;
+color:#2c3e50;
+margin-bottom:20px;
+}
+
+table{
+border-collapse:collapse;
+width:100%;
+}
+
+th,td{
+border:1px solid #e1e1e1;
+padding:12px;
+text-align:center;
+}
+
+th{
+background:#434648;
+color:white;
+}
+
+tr:nth-child(even){
+background:#f7f9fc;
+}
+
+.route{
+font-weight:bold;
+color:#34495e;
+}
+
+.summary{
+margin-top:20px;
+text-align:center;
+font-size:18px;
+font-weight:bold;
+color:#69756e;
+}
+
+.back-btn{
+display:block;
+margin:25px auto 0;
+background:#666d72;
+color:white;
+padding:10px 18px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.chart-box{
+margin-top:40px;
+}
+
+.footer{
+text-align:center;
+margin-top:25px;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+Employee Cab Routing System
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Cab Routing Result</h2>
+
+<table>
+
+<tr>
+<th>Cab ID</th>
+<th>Cab Type</th>
+<th>Route</th>
+<th>Distance</th>
+</tr>
+
+{% for cab in cabs %}
+
+<tr>
+
+<td>{{ cab[0] }}</td>
+
+<td>
+{% if cab[1] == "A" %}
+Type A (4 Seats)
+{% else %}
+Type B (8 Seats)
+{% endif %}
+</td>
+
+<td class="route">
+(0,0)
+{% for emp in cab[2] %}
+ → E{{ emp[0] }}({{ emp[1][0] }},{{ emp[1][1] }})
+{% endfor %}
+</td>
+
+<td id="dist{{loop.index}}">Calculating...</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<div class="summary">
+Total Cabs Used: {{ cabs|length }}
+</div>
+
+<div class="chart-box">
+<h2>Route Visualization</h2>
+<canvas id="routeChart"></canvas>
+</div>
+
+<button class="back-btn" onclick="window.location.href='/'">
+Go Back
+</button>
+
+</div>
+
+</div>
+
+<div class="footer">
+DAA Cab Routing Optimization Project
+</div>
+
+<script>
+
+const routes = [
+
+{% for cab in cabs %}
+{
+label:"Cab {{cab[0]}}",
+data:[
+{x:0,y:0}
+{% for emp in cab[2] %}
+,{x:{{emp[1][0]}},y:{{emp[1][1]}}}
+{% endfor %}
+],
+row:"dist{{loop.index}}"
+},
+{% endfor %}
+
+]
+
+/* DISTANCE CALCULATION */
+
+function distance(p1,p2){
+return Math.sqrt((p2.x-p1.x)**2 + (p2.y-p1.y)**2)
+}
+
+routes.forEach(route=>{
+
+let total=0
+
+for(let i=0;i<route.data.length-1;i++){
+
+total+=distance(route.data[i],route.data[i+1])
+
+}
+
+document.getElementById(route.row).innerText=total.toFixed(2)
+
+})
+
+/* CHART */
+
+const colors=["red","blue","green","orange","purple","black"]
+
+const datasets = routes.map((route,i)=>({
+label:route.label,
+data:route.data,
+borderColor:colors[i%colors.length],
+backgroundColor:colors[i%colors.length],
+showLine:true,
+fill:false,
+pointRadius:6
+}))
+
+const chart=new Chart(document.getElementById("routeChart"),{
+
+type:"scatter",
+
+data:{
+datasets:datasets
+},
+
+options:{
+plugins:{
+legend:{position:"top"}
+},
+scales:{
+x:{type:"linear"},
+y:{}
+}
+}
+
+})
+
+</script>
+
+</body>
+</html>

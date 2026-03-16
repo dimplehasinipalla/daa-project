@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Employee Cab Routing System</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+margin:0;
+background: linear-gradient(135deg,#4c4d4e,#00f2fe);
+height:100vh;
+}
+
+header{
+background:#1f2d3d;
+color:white;
+text-align:center;
+padding:20px;
+font-size:28px;
+}
+
+.container{
+width:75%;
+margin:auto;
+margin-top:40px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 6px 20px rgba(0,0,0,0.2);
+}
+
+h2{
+color:#416080;
+}
+
+label{
+font-weight:bold;
+}
+
+input{
+padding:8px;
+margin-top:5px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:10px;
+text-align:center;
+}
+
+th{
+background:#444546;
+color:white;
+}
+
+button{
+padding:8px 14px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.add-btn{
+background:#a0c8c8;
+color:rgb(12, 8, 8);
+}
+
+.remove-btn{
+background:#e74c3c;
+color:white;
+}
+
+.submit-btn{
+background:#a0c8c8;
+color:rgb(19, 17, 17);
+margin-top:15px;
+font-size:15px;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+.footer{
+text-align:center;
+margin-top:25px;
+color:white;
+}
+
+.result-box{
+margin-top:30px;
+background:#ffffff;
+padding:20px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+</style>
+
+<script>
+
+function addEmployee(){
+
+let table=document.getElementById("empTable");
+
+let row=table.insertRow(-1);
+
+let x=row.insertCell(0);
+let y=row.insertCell(1);
+let action=row.insertCell(2);
+
+x.innerHTML='<input type="number" name="x" required>';
+y.innerHTML='<input type="number" name="y" required>';
+action.innerHTML='<button type="button" class="remove-btn" onclick="removeRow(this)">Remove</button>';
+
+}
+
+function removeRow(btn){
+
+let row=btn.parentNode.parentNode;
+row.parentNode.removeChild(row);
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<header>
+Employee Cab Routing System
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<!-- CONNECTED TO FLASK BACKEND -->
+<form action="/calculate" method="POST">
+
+<h2>Cab Details</h2>
+
+<label>Type A Cabs (4 Seats)</label><br>
+<input type="number" name="Na" min="0" required><br>
+
+<label>Type B Cabs (8 Seats)</label><br>
+<input type="number" name="Nb" min="0" required><br>
+
+<h2>Employee Coordinates</h2>
+
+<table id="empTable">
+
+<tr>
+<th>X Coordinate</th>
+<th>Y Coordinate</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td><input type="number" name="x" required></td>
+<td><input type="number" name="y" required></td>
+<td></td>
+</tr>
+
+</table>
+
+<br>
+
+<button type="button" class="add-btn" onclick="addEmployee()">
+Add Employee
+</button>
+
+<br><br>
+
+<button type="submit" class="submit-btn">
+Generate Cab Routes
+</button>
+
+</form>
+
+</div>
+
+<!-- RESULT SECTION (BACKEND WILL DISPLAY OUTPUT HERE) -->
+
+</body>
+</html>
